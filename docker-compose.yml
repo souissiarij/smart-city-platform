@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+
+  gateway:
+    image: traefik:v2.11
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080" # Dashboard Traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  mobility:
+    build: ./mobility-rest
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.http.routers.mobility.rule=PathPrefix(`/mobility`)"
+
+  air:
+    build: ./air-soap
+    labels:
+      - "traefik.http.routers.air.rule=PathPrefix(`/air`)"
+
+  urgences:
+    build: ./urgences-grpc
+    labels:
+      - "traefik.http.routers.urgences.rule=PathPrefix(`/urgences`)"
+
+  citygraph:
+    build: ./city-graphql
+    labels:
+      - "traefik.http.routers.citygraph.rule=PathPrefix(`/graphql`)"
