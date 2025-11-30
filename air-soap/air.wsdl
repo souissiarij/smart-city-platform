@@ -1,0 +1,55 @@
+<definitions name="AirQualityService"
+             targetNamespace="http://example.com/air"
+             xmlns:tns="http://example.com/air"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+  <types>
+    <xsd:schema targetNamespace="http://example.com/air">
+      <xsd:element name="GetAQIRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="zone" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetAQIResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="AQI" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+
+  <message name="GetAQIRequest">
+    <part name="parameters" element="tns:GetAQIRequest"/>
+  </message>
+  <message name="GetAQIResponse">
+    <part name="parameters" element="tns:GetAQIResponse"/>
+  </message>
+
+  <portType name="AirQualityPortType">
+    <operation name="GetAQI">
+      <input message="tns:GetAQIRequest"/>
+      <output message="tns:GetAQIResponse"/>
+    </operation>
+  </portType>
+
+  <binding name="AirQualityBinding" type="tns:AirQualityPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="GetAQI">
+      <soap:operation soapAction="GetAQI"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+  </binding>
+
+  <service name="AirQualityService">
+    <port name="AirQualityPort" binding="tns:AirQualityBinding">
+      <soap:address location="http://localhost:4000/air"/>
+    </port>
+  </service>
+</definitions>

@@ -22,15 +22,22 @@ services:
 
   air:
     build: ./air-soap
+    ports:
+      - "4000:4000"
     labels:
       - "traefik.http.routers.air.rule=PathPrefix(`/air`)"
+      - "traefik.http.routers.air.entrypoints=web"
 
   urgences:
     build: ./urgences-grpc
+    ports:
+    - "5001:5001"  
     labels:
       - "traefik.http.routers.urgences.rule=PathPrefix(`/urgences`)"
 
   citygraph:
     build: ./city-graphql
+    ports:
+    - "5000:5000"  
     labels:
       - "traefik.http.routers.citygraph.rule=PathPrefix(`/graphql`)"

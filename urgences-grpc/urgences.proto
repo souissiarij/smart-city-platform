@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package urgences;
+
+// Service gRPC pour alertes urgentes
+service UrgencesService {
+  rpc SendAlert (AlertRequest) returns (AlertResponse);
+}
+
+message AlertRequest {
+  string type = 1;       // accident, incendie, ambulance
+  string location = 2;   // zone ou adresse
+}
+
+message AlertResponse {
+  string status = 1;     // "ok" ou "erreur"
+  string message = 2;
+}
