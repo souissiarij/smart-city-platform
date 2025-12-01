@@ -53,7 +53,7 @@ const service = {
             }
         }
     }
-};
+};  
 
 // Lecture du WSDL
 const wsdlPath = path.join(__dirname, 'air.wsdl');
