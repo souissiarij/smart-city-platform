@@ -7,6 +7,8 @@ services:
     command:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
+      - "--api.insecure=true"       # active le dashboard sans auth
+      - "--api.dashboard=true"
     ports:
       - "80:80"
       - "8080:8080" # Dashboard Traefik
@@ -15,29 +17,25 @@ services:
 
   mobility:
     build: ./mobility-rest
-    ports:
-      - "3000:3000"
     labels:
       - "traefik.http.routers.mobility.rule=PathPrefix(`/mobility`)"
+      - "traefik.http.services.mobility.loadbalancer.server.port=3000"
 
   air:
     build: ./air-soap
-    ports:
-      - "4000:4000"
     labels:
       - "traefik.http.routers.air.rule=PathPrefix(`/air`)"
-      - "traefik.http.routers.air.entrypoints=web"
+      - "traefik.http.services.air.loadbalancer.server.port=4000"
 
   urgences:
     build: ./urgences-grpc
-    ports:
-    - "5001:5001"  
     labels:
       - "traefik.http.routers.urgences.rule=PathPrefix(`/urgences`)"
+      - "traefik.http.services.urgences.loadbalancer.server.port=5001"
 
   citygraph:
     build: ./city-graphql
-    ports:
-    - "5000:5000"  
     labels:
       - "traefik.http.routers.citygraph.rule=PathPrefix(`/graphql`)"
+      - "traefik.http.routers.citygraph.entrypoints=web"
+      - "traefik.http.services.citygraph.loadbalancer.server.port=5000"

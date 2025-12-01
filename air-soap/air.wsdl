@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <definitions name="AirQualityService"
              targetNamespace="http://example.com/air"
-             xmlns:tns="http://example.com/air"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+             xmlns:tns="http://example.com/air"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
+  <!-- Types -->
   <types>
     <xsd:schema targetNamespace="http://example.com/air">
       <xsd:element name="GetAQIRequest">
@@ -21,35 +23,149 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+
+      <xsd:element name="GetPollutantsRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="zone" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetPollutantsResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="PM25" type="xsd:int"/>
+            <xsd:element name="PM10" type="xsd:int"/>
+            <xsd:element name="NO2" type="xsd:int"/>
+            <xsd:element name="O3" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="CompareZonesRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="zone1" type="xsd:string"/>
+            <xsd:element name="zone2" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CompareZonesResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="zone1AQI" type="xsd:int"/>
+            <xsd:element name="zone2AQI" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="AddMeasureRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="stationId" type="xsd:int"/>
+            <xsd:element name="PM25" type="xsd:int"/>
+            <xsd:element name="PM10" type="xsd:int"/>
+            <xsd:element name="NO2" type="xsd:int"/>
+            <xsd:element name="O3" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="AddMeasureResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="status" type="xsd:string"/>
+            <xsd:element name="measureId" type="xsd:int"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:element name="GetAllMeasuresRequest" type="xsd:anyType"/>
+      <xsd:element name="GetAllMeasuresResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="measures" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
     </xsd:schema>
   </types>
 
-  <message name="GetAQIRequest">
-    <part name="parameters" element="tns:GetAQIRequest"/>
-  </message>
-  <message name="GetAQIResponse">
-    <part name="parameters" element="tns:GetAQIResponse"/>
-  </message>
+  <!-- Messages -->
+  <message name="GetAQIRequest"><part name="parameters" element="tns:GetAQIRequest"/></message>
+  <message name="GetAQIResponse"><part name="parameters" element="tns:GetAQIResponse"/></message>
 
+  <message name="GetPollutantsRequest"><part name="parameters" element="tns:GetPollutantsRequest"/></message>
+  <message name="GetPollutantsResponse"><part name="parameters" element="tns:GetPollutantsResponse"/></message>
+
+  <message name="CompareZonesRequest"><part name="parameters" element="tns:CompareZonesRequest"/></message>
+  <message name="CompareZonesResponse"><part name="parameters" element="tns:CompareZonesResponse"/></message>
+
+  <message name="AddMeasureRequest"><part name="parameters" element="tns:AddMeasureRequest"/></message>
+  <message name="AddMeasureResponse"><part name="parameters" element="tns:AddMeasureResponse"/></message>
+
+  <message name="GetAllMeasuresRequest"><part name="parameters" element="tns:GetAllMeasuresRequest"/></message>
+  <message name="GetAllMeasuresResponse"><part name="parameters" element="tns:GetAllMeasuresResponse"/></message>
+
+  <!-- PortType -->
   <portType name="AirQualityPortType">
     <operation name="GetAQI">
       <input message="tns:GetAQIRequest"/>
       <output message="tns:GetAQIResponse"/>
     </operation>
+    <operation name="GetPollutants">
+      <input message="tns:GetPollutantsRequest"/>
+      <output message="tns:GetPollutantsResponse"/>
+    </operation>
+    <operation name="CompareZones">
+      <input message="tns:CompareZonesRequest"/>
+      <output message="tns:CompareZonesResponse"/>
+    </operation>
+    <operation name="AddMeasure">
+      <input message="tns:AddMeasureRequest"/>
+      <output message="tns:AddMeasureResponse"/>
+    </operation>
+    <operation name="GetAllMeasures">
+      <input message="tns:GetAllMeasuresRequest"/>
+      <output message="tns:GetAllMeasuresResponse"/>
+    </operation>
   </portType>
 
+  <!-- Binding -->
   <binding name="AirQualityBinding" type="tns:AirQualityPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="GetAQI">
-      <soap:operation soapAction="GetAQI"/>
+      <soap:operation soapAction="urn:GetAQI"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="GetPollutants">
+      <soap:operation soapAction="urn:GetPollutants"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="CompareZones">
+      <soap:operation soapAction="urn:CompareZones"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="AddMeasure">
+      <soap:operation soapAction="urn:AddMeasure"/>
+      <input><soap:body use="literal"/></input>
+      <output><soap:body use="literal"/></output>
+    </operation>
+    <operation name="GetAllMeasures">
+      <soap:operation soapAction="urn:GetAllMeasures"/>
       <input><soap:body use="literal"/></input>
       <output><soap:body use="literal"/></output>
     </operation>
   </binding>
 
+  <!-- Service -->
   <service name="AirQualityService">
     <port name="AirQualityPort" binding="tns:AirQualityBinding">
       <soap:address location="http://localhost:4000/air"/>
     </port>
   </service>
+
 </definitions>
